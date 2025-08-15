@@ -7,9 +7,17 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { BookOpen } from "lucide-react"
 import { Footer } from "@/components/footer"
+import { getUserSession } from "@/lib/session"
+import { redirect } from "next/navigation"
 
 export default async function DashboardPage() {
-  const blogs = await getUserBlogs()
+  const user = await getUserSession()
+
+  if (!user) {
+    redirect("/auth/login")
+  }
+
+  const blogs = await getUserBlogs(user.id)
 
   // Get post counts for each blog
   const blogsWithPostCounts = await Promise.all(
