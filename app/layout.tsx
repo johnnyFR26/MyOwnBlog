@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Blog SaaS Platform",
+  title: "My Own Blog",
   description: "Create and manage your own blog with custom styling",
   generator: "v0.app",
 }
