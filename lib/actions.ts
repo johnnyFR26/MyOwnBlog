@@ -18,22 +18,18 @@ export async function signIn(prevState: any, formData: FormData) {
 
   const supabase = createClient()
 
-  try {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email.toString(),
-      password: password.toString(),
-    })
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.toString(),
+    password: password.toString(),
+  })
 
-    if (error) {
-      return { error: error.message }
-    }
-
-    revalidatePath("/", "layout")
-    redirect("/dashboard")
-  } catch (error) {
-    console.error("Login error:", error)
-    return { error: "An unexpected error occurred. Please try again." }
+  if (error) {
+    return { error: error.message }
   }
+
+  // If we get here, authentication was successful
+  revalidatePath("/", "layout")
+  redirect("/dashboard")
 }
 
 export async function signUp(prevState: any, formData: FormData) {
