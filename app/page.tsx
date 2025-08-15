@@ -10,9 +10,15 @@ export default async function HomePage() {
           Build and customize your blog with our powerful SaaS platform. Choose your colors, create posts, and track
           your analytics.
         </p>
-        <div className="flex gap-4 justify-center">
+        <div className="flex gap-4 justify-center flex-wrap">
           <Button asChild size="lg">
             <Link href="/dashboard">Get Started</Link>
+          </Button>
+          <Button asChild size="lg" variant="outline">
+            <Link href="/auth/login">Login</Link>
+          </Button>
+          <Button asChild size="lg" variant="secondary">
+            <Link href="/auth/signup">Sign Up</Link>
           </Button>
         </div>
       </div>

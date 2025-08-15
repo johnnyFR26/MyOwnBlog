@@ -2,10 +2,69 @@
 
 import { createClient } from "@supabase/supabase-js"
 import { revalidatePath } from "next/cache"
+import { signUp, signIn } from "./auth"
+import { setUserSession, getUserSession, clearUserSession } from "./session"
+import { redirect } from "next/navigation"
 
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
+export async function signUpAction(formData: FormData) {
+  const email = formData.get("email") as string
+  const name = formData.get("name") as string
+  const password = formData.get("password") as string
+
+  if (!email || !name || !password) {
+    return { error: "All fields are required" }
+  }
+
+  const { user, error } = await signUp(email, name, password)
+
+  if (error) {
+    return { error }
+  }
+
+  if (user) {
+    await setUserSession(user.id)
+    redirect("/dashboard")
+  }
+
+  return { error: "Failed to create account" }
+}
+
+export async function signInAction(formData: FormData) {
+  const email = formData.get("email") as string
+  const password = formData.get("password") as string
+
+  if (!email || !password) {
+    return { error: "Email and password are required" }
+  }
+
+  const { user, error } = await signIn(email, password)
+
+  if (error) {
+    return { error }
+  }
+
+  if (user) {
+    await setUserSession(user.id)
+    redirect("/dashboard")
+  }
+
+  return { error: "Failed to sign in" }
+}
+
+export async function signOutAction() {
+  await clearUserSession()
+  redirect("/")
+}
+
 export async function createBlogAction(formData: FormData) {
+  const user = await getUserSession()
+
+  if (!user) {
+    return { error: "You must be logged in to create a blog" }
+  }
+
   const name = formData.get("name") as string
   const slug = formData.get("slug") as string
   const description = formData.get("description") as string
@@ -14,7 +73,6 @@ export async function createBlogAction(formData: FormData) {
     return { error: "Name and slug are required" }
   }
 
-  // Check if slug already exists
   const { data: existingBlog } = await supabase.from("blogs").select("id").eq("slug", slug).single()
 
   if (existingBlog) {
@@ -28,6 +86,7 @@ export async function createBlogAction(formData: FormData) {
         name,
         slug,
         description: description || null,
+        user_id: user.id,
         primary_color: "#3b82f6",
         secondary_color: "#1f2937",
         accent_color: "#10b981",
@@ -57,7 +116,6 @@ export async function createPostAction(formData: FormData) {
     return { error: "Blog ID, title, and slug are required" }
   }
 
-  // Check if slug already exists for this blog
   const { data: existingPost } = await supabase
     .from("posts")
     .select("id")
@@ -105,14 +163,12 @@ export async function updatePostAction(formData: FormData) {
     return { error: "Post ID, title, and slug are required" }
   }
 
-  // Get the current post to check blog_id
   const { data: currentPost } = await supabase.from("posts").select("blog_id").eq("id", postId).single()
 
   if (!currentPost) {
     return { error: "Post not found" }
   }
 
-  // Check if slug already exists for this blog (excluding current post)
   const { data: existingPost } = await supabase
     .from("posts")
     .select("id")
@@ -158,7 +214,6 @@ export async function updateBlogColorsAction(formData: FormData) {
     return { error: "All color fields are required" }
   }
 
-  // Validate hex color format
   const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
   if (!hexColorRegex.test(primaryColor) || !hexColorRegex.test(secondaryColor) || !hexColorRegex.test(accentColor)) {
     return { error: "Invalid color format. Please use hex colors (e.g., #FF0000)" }
