@@ -5,8 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Separator } from "@/components/ui/separator"
 import Link from "next/link"
 import { signUpAction } from "@/lib/actions"
+import { AlertCircle, User, Mail, Lock } from "lucide-react"
 
 export function SignUpForm() {
   const [isLoading, setIsLoading] = useState(false)
@@ -29,37 +32,60 @@ export function SignUpForm() {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">Cadastro</CardTitle>
-        <CardDescription className="text-center">Crie sua conta para começar a usar a plataforma</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form action={handleSubmit} className="space-y-4">
-          {error && <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">{error}</div>}
-          <div className="space-y-2">
-            <Label htmlFor="name">Nome</Label>
-            <Input id="name" name="name" type="text" placeholder="Seu nome" required />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/20 p-4">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader className="space-y-1 text-center">
+          <CardTitle className="text-3xl font-bold">Criar conta</CardTitle>
+          <CardDescription>Crie sua conta para começar a usar a plataforma</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <form action={handleSubmit} className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="name" className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                Nome
+              </Label>
+              <Input id="name" name="name" type="text" placeholder="Seu nome completo" required />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email" className="flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                Email
+              </Label>
+              <Input id="email" name="email" type="email" placeholder="seu@email.com" required />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="flex items-center gap-2">
+                <Lock className="h-4 w-4" />
+                Senha
+              </Label>
+              <Input id="password" name="password" type="password" placeholder="••••••••" required />
+            </div>
+
+            <Button type="submit" className="w-full" disabled={isLoading} size="lg">
+              {isLoading ? "Criando conta..." : "Criar conta"}
+            </Button>
+          </form>
+
+          <Separator />
+
+          <div className="text-center text-sm text-muted-foreground">
+            Já tem uma conta?{" "}
+            <Link href="/auth/login" className="text-primary hover:underline font-medium">
+              Faça login aqui
+            </Link>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" placeholder="seu@email.com" required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Senha</Label>
-            <Input id="password" name="password" type="password" placeholder="••••••••" required />
-          </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Criando conta..." : "Criar conta"}
-          </Button>
-        </form>
-        <div className="mt-4 text-center text-sm">
-          Já tem uma conta?{" "}
-          <Link href="/auth/login" className="text-primary hover:underline">
-            Faça login
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

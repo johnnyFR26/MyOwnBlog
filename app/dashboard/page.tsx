@@ -3,6 +3,10 @@ import DashboardHeader from "@/components/dashboard/header"
 import BlogCard from "@/components/dashboard/blog-card"
 import CreateBlogDialog from "@/components/dashboard/create-blog-dialog"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { BookOpen } from "lucide-react"
+import { Footer } from "@/components/footer"
 
 export default async function DashboardPage() {
   const blogs = await getUserBlogs()
@@ -22,20 +26,32 @@ export default async function DashboardPage() {
     <div className="min-h-screen bg-background">
       <DashboardHeader />
 
-      <main className="container py-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Your Blogs</h1>
-            <p className="text-muted-foreground">Manage your blogs and create new content</p>
+      <main className="container py-8">
+        <div className="flex items-center justify-between mb-8">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <h1 className="text-4xl font-bold tracking-tight">Seus Blogs</h1>
+              <Badge variant="secondary" className="text-sm">
+                {blogs.length} {blogs.length === 1 ? "blog" : "blogs"}
+              </Badge>
+            </div>
+            <p className="text-lg text-muted-foreground">Gerencie seus blogs e crie novo conteúdo</p>
           </div>
           <CreateBlogDialog />
         </div>
 
+        <Separator className="mb-8" />
+
         {blogs.length === 0 ? (
-          <Card className="text-center py-12">
-            <CardHeader>
-              <CardTitle>No blogs yet</CardTitle>
-              <CardDescription>Create your first blog to start publishing content</CardDescription>
+          <Card className="text-center py-16 border-dashed border-2 hover:border-primary/50 transition-colors">
+            <CardHeader className="space-y-4">
+              <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center">
+                <BookOpen className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <CardTitle className="text-2xl">Nenhum blog ainda</CardTitle>
+              <CardDescription className="text-lg max-w-md mx-auto">
+                Crie seu primeiro blog para começar a publicar conteúdo e compartilhar suas ideias com o mundo
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <CreateBlogDialog />
@@ -49,6 +65,8 @@ export default async function DashboardPage() {
           </div>
         )}
       </main>
+
+      <Footer />
     </div>
   )
 }
