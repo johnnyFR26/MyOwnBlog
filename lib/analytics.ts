@@ -1,5 +1,7 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@supabase/supabase-js"
 import { headers } from "next/headers"
+
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
 interface AnalyticsData {
   blog_id: string
@@ -9,7 +11,6 @@ interface AnalyticsData {
 
 export async function trackAnalytics(data: AnalyticsData) {
   try {
-    const supabase = createClient()
     const headersList = headers()
 
     // Get visitor information
@@ -40,8 +41,6 @@ export async function trackAnalytics(data: AnalyticsData) {
 }
 
 export async function getBlogAnalytics(blogId: string, days = 30) {
-  const supabase = createClient()
-
   const startDate = new Date()
   startDate.setDate(startDate.getDate() - days)
 
@@ -61,8 +60,6 @@ export async function getBlogAnalytics(blogId: string, days = 30) {
 }
 
 export async function getPostAnalytics(postId: string, days = 30) {
-  const supabase = createClient()
-
   const startDate = new Date()
   startDate.setDate(startDate.getDate() - days)
 
@@ -82,8 +79,6 @@ export async function getPostAnalytics(postId: string, days = 30) {
 }
 
 export async function getAnalyticsSummary(blogId: string) {
-  const supabase = createClient()
-
   // Get total views for the blog
   const { data: totalViews, error: totalError } = await supabase
     .from("analytics")

@@ -1,5 +1,3 @@
-import { createClient } from "@/lib/supabase/server"
-import { redirect, notFound } from "next/navigation"
 import { getBlogById, getBlogPosts } from "@/lib/database"
 import { getAnalyticsSummary, getBlogAnalytics } from "@/lib/analytics"
 import DashboardHeader from "@/components/dashboard/header"
@@ -10,6 +8,7 @@ import TrafficSources from "@/components/analytics/traffic-sources"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Download } from "lucide-react"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 
 interface AnalyticsPageProps {
   params: {
@@ -66,15 +65,6 @@ function processAnalyticsData(analytics: any[]) {
 }
 
 export default async function AnalyticsPage({ params }: AnalyticsPageProps) {
-  const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect("/auth/login")
-  }
-
   const blog = await getBlogById(params.id)
   if (!blog) {
     notFound()

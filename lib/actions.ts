@@ -1,82 +1,11 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server"
-import { redirect } from "next/navigation"
+import { createClient } from "@supabase/supabase-js"
 import { revalidatePath } from "next/cache"
 
-export async function signIn(prevState: any, formData: FormData) {
-  if (!formData) {
-    return { error: "Form data is missing" }
-  }
-
-  const email = formData.get("email")
-  const password = formData.get("password")
-
-  if (!email || !password) {
-    return { error: "Email and password are required" }
-  }
-
-  const supabase = createClient()
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email: email.toString(),
-    password: password.toString(),
-  })
-
-  if (error) {
-    return { error: error.message }
-  }
-
-  // If we get here, authentication was successful
-  revalidatePath("/", "layout")
-  redirect("/dashboard")
-}
-
-export async function signUp(prevState: any, formData: FormData) {
-  if (!formData) {
-    return { error: "Form data is missing" }
-  }
-
-  const email = formData.get("email")
-  const password = formData.get("password")
-
-  if (!email || !password) {
-    return { error: "Email and password are required" }
-  }
-
-  const supabase = createClient()
-
-  try {
-    const { error } = await supabase.auth.signUp({
-      email: email.toString(),
-      password: password.toString(),
-      options: {
-        emailRedirectTo:
-          process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
-          `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/dashboard`,
-      },
-    })
-
-    if (error) {
-      return { error: error.message }
-    }
-
-    return { success: "Check your email to confirm your account." }
-  } catch (error) {
-    console.error("Sign up error:", error)
-    return { error: "An unexpected error occurred. Please try again." }
-  }
-}
-
-export async function signOut() {
-  const supabase = createClient()
-  await supabase.auth.signOut()
-  redirect("/auth/login")
-}
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
 export async function createBlogAction(formData: FormData) {
-  const supabase = createClient()
-
   const name = formData.get("name") as string
   const slug = formData.get("slug") as string
   const description = formData.get("description") as string
@@ -117,8 +46,6 @@ export async function createBlogAction(formData: FormData) {
 }
 
 export async function createPostAction(formData: FormData) {
-  const supabase = createClient()
-
   const blogId = formData.get("blog_id") as string
   const title = formData.get("title") as string
   const slug = formData.get("slug") as string
@@ -167,8 +94,6 @@ export async function createPostAction(formData: FormData) {
 }
 
 export async function updatePostAction(formData: FormData) {
-  const supabase = createClient()
-
   const postId = formData.get("post_id") as string
   const title = formData.get("title") as string
   const slug = formData.get("slug") as string
@@ -224,8 +149,6 @@ export async function updatePostAction(formData: FormData) {
 }
 
 export async function updateBlogColorsAction(formData: FormData) {
-  const supabase = createClient()
-
   const blogId = formData.get("blog_id") as string
   const primaryColor = formData.get("primary_color") as string
   const secondaryColor = formData.get("secondary_color") as string

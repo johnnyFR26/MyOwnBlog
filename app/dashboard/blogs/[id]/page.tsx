@@ -1,5 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
-import { redirect, notFound } from "next/navigation"
+import { notFound } from "next/navigation"
 import { getBlogById, getBlogPosts } from "@/lib/database"
 import { getAnalyticsSummary } from "@/lib/analytics"
 import DashboardHeader from "@/components/dashboard/header"
@@ -17,15 +16,6 @@ interface BlogDetailPageProps {
 }
 
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
-  const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect("/auth/login")
-  }
-
   const blog = await getBlogById(params.id)
   if (!blog) {
     notFound()

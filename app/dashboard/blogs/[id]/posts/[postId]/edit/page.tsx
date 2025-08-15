@@ -1,8 +1,10 @@
-import { createClient } from "@/lib/supabase/server"
-import { redirect, notFound } from "next/navigation"
+import { notFound } from "next/navigation"
 import { getBlogById } from "@/lib/database"
 import PostEditor from "@/components/editor/post-editor"
 import type { Post } from "@/lib/database"
+import { createClient } from "@supabase/supabase-js"
+
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
 interface EditPostPageProps {
   params: {
@@ -12,8 +14,6 @@ interface EditPostPageProps {
 }
 
 async function getPostById(postId: string): Promise<Post | null> {
-  const supabase = createClient()
-
   const { data: post, error } = await supabase.from("posts").select("*").eq("id", postId).single()
 
   if (error) {
@@ -25,15 +25,6 @@ async function getPostById(postId: string): Promise<Post | null> {
 }
 
 export default async function EditPostPage({ params }: EditPostPageProps) {
-  const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect("/auth/login")
-  }
-
   const blog = await getBlogById(params.id)
   if (!blog) {
     notFound()

@@ -1,5 +1,3 @@
-import { createClient } from "@/lib/supabase/server"
-import { redirect } from "next/navigation"
 import { getUserBlogs, getBlogPosts } from "@/lib/database"
 import DashboardHeader from "@/components/dashboard/header"
 import BlogCard from "@/components/dashboard/blog-card"
@@ -7,15 +5,6 @@ import CreateBlogDialog from "@/components/dashboard/create-blog-dialog"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default async function DashboardPage() {
-  const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect("/auth/login")
-  }
-
   const blogs = await getUserBlogs()
 
   // Get post counts for each blog

@@ -1,5 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
-import { redirect, notFound } from "next/navigation"
+import { notFound } from "next/navigation"
 import { getBlogById } from "@/lib/database"
 import PostEditor from "@/components/editor/post-editor"
 
@@ -10,15 +9,6 @@ interface NewPostPageProps {
 }
 
 export default async function NewPostPage({ params }: NewPostPageProps) {
-  const supabase = createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect("/auth/login")
-  }
-
   const blog = await getBlogById(params.id)
   if (!blog) {
     notFound()

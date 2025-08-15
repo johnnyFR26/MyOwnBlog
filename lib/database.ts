@@ -1,4 +1,6 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@supabase/supabase-js"
+
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
 export interface Blog {
   id: string
@@ -27,8 +29,6 @@ export interface Post {
 }
 
 export async function getUserBlogs(): Promise<Blog[]> {
-  const supabase = createClient()
-
   const { data: blogs, error } = await supabase.from("blogs").select("*").order("created_at", { ascending: false })
 
   if (error) {
@@ -40,8 +40,6 @@ export async function getUserBlogs(): Promise<Blog[]> {
 }
 
 export async function getBlogById(id: string): Promise<Blog | null> {
-  const supabase = createClient()
-
   const { data: blog, error } = await supabase.from("blogs").select("*").eq("id", id).single()
 
   if (error) {
@@ -53,8 +51,6 @@ export async function getBlogById(id: string): Promise<Blog | null> {
 }
 
 export async function getBlogPosts(blogId: string): Promise<Post[]> {
-  const supabase = createClient()
-
   const { data: posts, error } = await supabase
     .from("posts")
     .select("*")
@@ -77,8 +73,6 @@ export async function createBlog(data: {
   secondary_color?: string
   accent_color?: string
 }): Promise<Blog | null> {
-  const supabase = createClient()
-
   const { data: blog, error } = await supabase.from("blogs").insert([data]).select().single()
 
   if (error) {
@@ -90,8 +84,6 @@ export async function createBlog(data: {
 }
 
 export async function getPublishedPosts(blogSlug: string): Promise<Post[]> {
-  const supabase = createClient()
-
   const { data: posts, error } = await supabase
     .from("posts")
     .select(`
@@ -111,8 +103,6 @@ export async function getPublishedPosts(blogSlug: string): Promise<Post[]> {
 }
 
 export async function getPublishedPost(blogSlug: string, postSlug: string): Promise<Post | null> {
-  const supabase = createClient()
-
   const { data: post, error } = await supabase
     .from("posts")
     .select(`
@@ -133,8 +123,6 @@ export async function getPublishedPost(blogSlug: string, postSlug: string): Prom
 }
 
 export async function getBlogBySlug(slug: string): Promise<Blog | null> {
-  const supabase = createClient()
-
   const { data: blog, error } = await supabase.from("blogs").select("*").eq("slug", slug).single()
 
   if (error) {
