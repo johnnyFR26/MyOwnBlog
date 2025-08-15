@@ -31,7 +31,7 @@ export default async function DashboardPage() {
   )
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background m-8">
       <DashboardHeader />
 
       <main className="container py-8">
