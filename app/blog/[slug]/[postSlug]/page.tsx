@@ -90,7 +90,7 @@ export default async function PostPage({ params }: PostPageProps) {
       <footer className="border-t mt-12" style={{ borderTopColor: blog.secondary_color }}>
         <div className="container py-6 text-center text-sm text-muted-foreground">
           <p>
-            © {new Date().getFullYear()} {blog.name}. Powered by BlogSaaS.
+            © {new Date().getFullYear()} {blog.name}. Powered by Toasty Tech.
           </p>
         </div>
       </footer>
