@@ -28,8 +28,12 @@ export interface Post {
   updated_at: string
 }
 
-export async function getUserBlogs(): Promise<Blog[]> {
-  const { data: blogs, error } = await supabase.from("blogs").select("*").order("created_at", { ascending: false })
+export async function getUserBlogs(userId: string): Promise<Blog[]> {
+  const { data: blogs, error } = await supabase
+    .from("blogs")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
 
   if (error) {
     console.error("Error fetching blogs:", error)
