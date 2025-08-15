@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -119,5 +119,68 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  .blog-theme {
+    --blog-primary: var(--primary);
+    --blog-secondary: var(--secondary);
+    --blog-accent: var(--accent);
+  }
+
+  .blog-primary {
+    background-color: var(--blog-primary);
+    color: var(--blog-primary-foreground, white);
+  }
+
+  .blog-secondary {
+    background-color: var(--blog-secondary);
+    color: var(--blog-secondary-foreground, white);
+  }
+
+  .blog-accent {
+    background-color: var(--blog-accent);
+    color: var(--blog-accent-foreground, white);
+  }
+
+  .prose {
+    max-width: none;
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    @apply font-semibold text-foreground;
+  }
+
+  .prose p {
+    @apply text-muted-foreground leading-relaxed;
+  }
+
+  .prose a {
+    @apply text-primary hover:underline;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-border pl-4 italic text-muted-foreground;
+  }
+
+  .prose code {
+    @apply bg-muted px-1 py-0.5 rounded text-sm;
+  }
+
+  .prose pre {
+    @apply bg-muted p-4 rounded-lg overflow-x-auto;
+  }
+
+  .prose ul,
+  .prose ol {
+    @apply text-muted-foreground;
+  }
+
+  .prose img {
+    @apply rounded-lg;
   }
 }

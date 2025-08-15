@@ -6,7 +6,7 @@ import type { Post } from "@/lib/database"
 
 interface EditPostPageProps {
   params: {
-    blogId: string
+    id: string
     postId: string
   }
 }
@@ -34,7 +34,7 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
     redirect("/auth/login")
   }
 
-  const blog = await getBlogById(params.blogId)
+  const blog = await getBlogById(params.id)
   if (!blog) {
     notFound()
   }
