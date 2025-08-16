@@ -43,7 +43,7 @@ export default async function PostPage({ params }: PostPageProps) {
           <Button variant="ghost" asChild className="mb-6">
             <Link href={`/blog/${blog.slug}`}>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to {blog.name}
+              Voltar para {blog.name}
             </Link>
           </Button>
 
@@ -58,7 +58,7 @@ export default async function PostPage({ params }: PostPageProps) {
               <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                 <div className="flex items-center">
                   <Calendar className="h-4 w-4 mr-1" />
-                  {new Date(post.created_at).toLocaleDateString("en-US", {
+                  {new Date(post.created_at).toLocaleDateString("pt-BR", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
@@ -66,7 +66,7 @@ export default async function PostPage({ params }: PostPageProps) {
                 </div>
                 <div className="flex items-center">
                   <Clock className="h-4 w-4 mr-1" />
-                  {readingTime} min read
+                  {readingTime} minutos
                 </div>
               </div>
             </header>
