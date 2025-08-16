@@ -7,8 +7,7 @@ import "./globals.css"
 
 export const metadata: Metadata = {
   title: "My Own Blog",
-  description: "Create and manage your own blog with custom styling",
-  generator: "v0.app",
+  description: "Crie seus próprios blogs com cores, textos e links únicos e profissionais.",
 }
 
 export default function RootLayout({

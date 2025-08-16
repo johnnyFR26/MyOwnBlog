@@ -19,7 +19,6 @@ export default async function DashboardPage() {
 
   const blogs = await getUserBlogs(user.id)
 
-  // Get post counts for each blog
   const blogsWithPostCounts = await Promise.all(
     blogs.map(async (blog) => {
       const posts = await getBlogPosts(blog.id)

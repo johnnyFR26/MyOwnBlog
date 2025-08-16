@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Footer } from "@/components/footer"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -26,7 +25,7 @@ export default async function HomePage() {
 
           <div className="flex gap-4 justify-center flex-wrap mt-8">
             <Button asChild size="lg" className="shadow-lg">
-              <Link href="/dashboard">Get Começar</Link>
+              <Link href="/dashboard">Começar</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
               <Link href="/auth/login">Login</Link>
@@ -45,7 +44,7 @@ export default async function HomePage() {
             <CardHeader>
               <PenTool className="h-12 w-12 mx-auto text-primary mb-4" />
               <CardTitle>Editor de texto</CardTitle>
-              <CardDescription>Create beautiful posts with our intuitive editor</CardDescription>
+              <CardDescription>Crie seus blogs com o editor de texto integrado</CardDescription>
             </CardHeader>
           </Card>
 
@@ -53,7 +52,7 @@ export default async function HomePage() {
             <CardHeader>
               <Palette className="h-12 w-12 mx-auto text-primary mb-4" />
               <CardTitle>Cores customizaveis</CardTitle>
-              <CardDescription>Personalize your blog with custom color schemes</CardDescription>
+              <CardDescription>Personalize as cores de seu blog com facilidade</CardDescription>
             </CardHeader>
           </Card>
 
@@ -61,7 +60,7 @@ export default async function HomePage() {
             <CardHeader>
               <BarChart3 className="h-12 w-12 mx-auto text-primary mb-4" />
               <CardTitle>Analytics</CardTitle>
-              <CardDescription>Track your blog performance with detailed analytics</CardDescription>
+              <CardDescription>Acompanhe seus blogs com nossas ferramentas de analytics</CardDescription>
             </CardHeader>
           </Card>
 
@@ -69,7 +68,7 @@ export default async function HomePage() {
             <CardHeader>
               <Users className="h-12 w-12 mx-auto text-primary mb-4" />
               <CardTitle>Páginas públicas</CardTitle>
-              <CardDescription>Share your blog with custom public URLs</CardDescription>
+              <CardDescription>Compartilhe seus blogs com o mundo com facilidades</CardDescription>
             </CardHeader>
           </Card>
         </div>

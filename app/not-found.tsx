@@ -14,7 +14,7 @@ export default function NotFound() {
         <Button asChild>
           <Link href="/">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Go Home
+            Voltar para a Home
           </Link>
         </Button>
       </div>

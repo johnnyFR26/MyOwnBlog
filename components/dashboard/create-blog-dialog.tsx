@@ -40,13 +40,13 @@ export default function CreateBlogDialog() {
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          Create Blog
+          Crie seu blog
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create New Blog</DialogTitle>
-          <DialogDescription>Create a new blog to start publishing your content.</DialogDescription>
+          <DialogTitle>Crie um novo blog</DialogTitle>
+          <DialogDescription>Crie um blog para publicar seus artigos.</DialogDescription>
         </DialogHeader>
         <form action={handleSubmit} className="space-y-4">
           <div className="space-y-2">
