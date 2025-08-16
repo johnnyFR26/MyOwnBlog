@@ -25,7 +25,7 @@ export default async function BlogPage({ params }: BlogPageProps) {
   })
 
   return (
-    <div className="min-h-screen ml-4 bg-background">
+    <div className="min-h-screen bg-background">
       <BlogHeader blog={blog} />
 
       <main className="container py-8">

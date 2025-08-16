@@ -16,11 +16,11 @@ export default function BlogHeader({ blog }: BlogHeaderProps) {
     >
       <div className="container py-8">
         <Link href={`/blog/${blog.slug}`} className="block">
-          <h1 className="text-4xl font-bold mb-2" style={{ color: blog.secondary_color }}>
+          <h1 className="text-4xl font-bold ml-8 mb-2" style={{ color: blog.secondary_color }}>
             {blog.name}
           </h1>
           {blog.description && (
-            <p className="text-lg opacity-90" style={{ color: blog.secondary_color }}>
+            <p className="text-lg opacity-90 ml-8" style={{ color: blog.secondary_color }}>
               {blog.description}
             </p>
           )}
