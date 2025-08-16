@@ -33,7 +33,7 @@ export default function PostCard({ post, blog }: PostCardProps) {
           </div>
           <div className="flex items-center">
             <Clock className="h-4 w-4 mr-1" />
-            {readingTime} min read
+            {readingTime} minutos de leitura
           </div>
         </div>
       </CardContent>
