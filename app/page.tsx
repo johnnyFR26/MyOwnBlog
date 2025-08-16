@@ -17,20 +17,16 @@ export default async function HomePage() {
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center space-y-6 max-w-4xl mx-auto">
-          <Badge variant="secondary" className="mb-4">
-            🚀 Blog SaaS Platform
-          </Badge>
           <h1 className="text-5xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Create Your Own Blog Platform
+            Crie seus próprios blogs
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Build and customize your blog with our powerful SaaS platform. Choose your colors, create posts, and track
-            your analytics with ease.
+            Construa e customize seu próprio blog com cores, textos e links únicos e profissionais.
           </p>
 
           <div className="flex gap-4 justify-center flex-wrap mt-8">
             <Button asChild size="lg" className="shadow-lg">
-              <Link href="/dashboard">Get Started</Link>
+              <Link href="/dashboard">Get Começar</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
               <Link href="/auth/login">Login</Link>
@@ -48,7 +44,7 @@ export default async function HomePage() {
           <Card className="text-center hover:shadow-lg transition-shadow">
             <CardHeader>
               <PenTool className="h-12 w-12 mx-auto text-primary mb-4" />
-              <CardTitle>Rich Editor</CardTitle>
+              <CardTitle>Editor de texto</CardTitle>
               <CardDescription>Create beautiful posts with our intuitive editor</CardDescription>
             </CardHeader>
           </Card>
@@ -56,7 +52,7 @@ export default async function HomePage() {
           <Card className="text-center hover:shadow-lg transition-shadow">
             <CardHeader>
               <Palette className="h-12 w-12 mx-auto text-primary mb-4" />
-              <CardTitle>Custom Colors</CardTitle>
+              <CardTitle>Cores customizaveis</CardTitle>
               <CardDescription>Personalize your blog with custom color schemes</CardDescription>
             </CardHeader>
           </Card>
@@ -72,7 +68,7 @@ export default async function HomePage() {
           <Card className="text-center hover:shadow-lg transition-shadow">
             <CardHeader>
               <Users className="h-12 w-12 mx-auto text-primary mb-4" />
-              <CardTitle>Public Pages</CardTitle>
+              <CardTitle>Páginas públicas</CardTitle>
               <CardDescription>Share your blog with custom public URLs</CardDescription>
             </CardHeader>
           </Card>
