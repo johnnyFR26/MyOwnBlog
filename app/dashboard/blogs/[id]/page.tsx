@@ -29,7 +29,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       <DashboardHeader />
 
       <main className="container py-6">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between ml-4 mb-6">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">{blog.name}</h1>
             <p className="text-muted-foreground">{blog.description || "No description"}</p>
@@ -38,7 +38,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             <Button variant="outline" asChild>
               <Link href={`/blog/${blog.slug}`} target="_blank">
                 <Eye className="h-4 w-4 mr-2" />
-                View Blog
+                Ver Blog
               </Link>
             </Button>
             <Button variant="outline" asChild>
@@ -56,7 +56,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
             <Button asChild>
               <Link href={`/dashboard/blogs/${blog.id}/posts/new`}>
                 <Plus className="h-4 w-4 mr-2" />
-                New Post
+                Novo Post
               </Link>
             </Button>
           </div>
@@ -65,7 +65,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
         <div className="grid gap-6 md:grid-cols-4">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
+              <CardTitle className="text-sm font-medium">Total de Posts</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{posts.length}</div>
@@ -74,7 +74,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Published</CardTitle>
+              <CardTitle className="text-sm font-medium">Publicados</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{posts.filter((post) => post.published).length}</div>
@@ -83,7 +83,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Drafts</CardTitle>
+              <CardTitle className="text-sm font-medium">Rascunhos</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{posts.filter((post) => !post.published).length}</div>
@@ -92,7 +92,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Blog Colors</CardTitle>
+              <CardTitle className="text-sm font-medium">Cores do Blog</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex space-x-2">
@@ -108,17 +108,17 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Recent Posts</CardTitle>
-                <CardDescription>Manage your blog posts and create new content</CardDescription>
+                <CardTitle>Recentes Posts</CardTitle>
+                <CardDescription>Gerencie seus posts e crie novos.</CardDescription>
               </CardHeader>
               <CardContent>
                 {posts.length === 0 ? (
                   <div className="text-center py-8">
-                    <p className="text-muted-foreground mb-4">No posts yet</p>
+                    <p className="text-muted-foreground mb-4">Sem posts ainda</p>
                     <Button asChild>
                       <Link href={`/dashboard/blogs/${blog.id}/posts/new`}>
                         <Plus className="h-4 w-4 mr-2" />
-                        Create your first post
+                        Crie seu primeiro post
                       </Link>
                     </Button>
                   </div>
@@ -134,7 +134,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
                               {new Date(post.created_at).toLocaleDateString()}
                             </div>
                             <Badge variant={post.published ? "default" : "secondary"}>
-                              {post.published ? "Published" : "Draft"}
+                              {post.published ? "Publicado" : "Rascunho"}
                             </Badge>
                           </div>
                         </div>
