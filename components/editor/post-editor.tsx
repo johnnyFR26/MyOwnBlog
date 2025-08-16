@@ -89,7 +89,7 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
             <Button variant="ghost" size="sm" asChild>
               <Link href={`/dashboard/blogs/${blog.id}`}>
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to {blog.name}
+                Voltar para {blog.name}
               </Link>
             </Button>
           </div>
@@ -97,7 +97,7 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
           <div className="flex items-center space-x-2">
             <Button variant="outline" onClick={() => handleSave(false)} disabled={loading}>
               {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
-              Save Draft
+              Salvar rascunho
             </Button>
             <Button onClick={() => handleSave(true)} disabled={loading}>
               {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Eye className="h-4 w-4 mr-2" />}
@@ -112,13 +112,13 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
           <div className="lg:col-span-2">
             <Tabs defaultValue="edit" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="edit">Edit</TabsTrigger>
-                <TabsTrigger value="preview">Preview</TabsTrigger>
+                <TabsTrigger value="edit">Editar</TabsTrigger>
+                <TabsTrigger value="preview">Prévia</TabsTrigger>
               </TabsList>
 
               <TabsContent value="edit" className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="title">Title</Label>
+                  <Label htmlFor="title">Titulo</Label>
                   <Input
                     id="title"
                     value={title}
@@ -157,28 +157,28 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="excerpt">Excerpt (Optional)</Label>
+                  <Label htmlFor="excerpt">Subtitulo (Opcional)</Label>
                   <Textarea
                     id="excerpt"
                     value={excerpt}
                     onChange={(e) => setExcerpt(e.target.value)}
-                    placeholder="A brief description of your post..."
+                    placeholder="Uma pequena introdução do tema..."
                     rows={3}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="content">Content</Label>
+                  <Label htmlFor="content">Conteudo</Label>
                   <Textarea
                     id="content"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    placeholder="Write your post content here... You can use HTML tags for formatting."
+                    placeholder="Escreva o conteudo do post... Você pode usar HTML."
                     rows={20}
                     className="font-mono text-sm"
                   />
                   <p className="text-xs text-muted-foreground">
-                    You can use HTML tags like &lt;h1&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a&gt;, etc.
+                    Você pode usar tags HTML como &lt;h1&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a&gt;, etc.
                   </p>
                 </div>
               </TabsContent>
@@ -205,12 +205,12 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Post Settings</CardTitle>
+                <CardTitle className="text-lg">Configuraçoes do Post</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="published" className="text-sm font-medium">
-                    Published
+                    Publicado
                   </Label>
                   <Switch id="published" checked={published} onCheckedChange={setPublished} />
                 </div>
@@ -219,8 +219,8 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
                   <p>Status: {published ? "Published" : "Draft"}</p>
                   {mode === "edit" && post && (
                     <>
-                      <p>Created: {new Date(post.created_at).toLocaleDateString()}</p>
-                      <p>Updated: {new Date(post.updated_at).toLocaleDateString()}</p>
+                      <p>Criado em: {new Date(post.created_at).toLocaleDateString()}</p>
+                      <p>Atualizado em: {new Date(post.updated_at).toLocaleDateString()}</p>
                     </>
                   )}
                 </div>
@@ -240,7 +240,7 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
                     <strong>URL:</strong> /{blog.slug}
                   </p>
                   <div className="flex items-center space-x-2">
-                    <strong>Colors:</strong>
+                    <strong>Cores:</strong>
                     <div className="flex space-x-1">
                       <div className="w-4 h-4 rounded-full border" style={{ backgroundColor: blog.primary_color }} />
                       <div className="w-4 h-4 rounded-full border" style={{ backgroundColor: blog.secondary_color }} />
@@ -253,13 +253,13 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Quick Tips</CardTitle>
+                <CardTitle className="text-lg">Dicas</CardTitle>
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground space-y-2">
-                <p>• Use HTML tags for rich formatting</p>
-                <p>• Keep your excerpt under 160 characters</p>
-                <p>• Use descriptive URLs for better SEO</p>
-                <p>• Save drafts frequently while writing</p>
+                <p>• Use HTML tags para formatar o conteudo</p>
+                <p>• Mantenha o subtitulo abaixo de 100 caracteres</p>
+                <p>• Use descriptivos slugs para melhor SEO</p>
+                <p>• Salve rascunhos para posterior edição</p>
               </CardContent>
             </Card>
           </div>
