@@ -157,6 +157,71 @@ interface KeyboardShortcutsProps {
   onInsert: (text: string, cursorOffset?: number) => void
 }
 
+function getCaretCoordinates(element: HTMLTextAreaElement, position: number) {
+  const div = document.createElement("div")
+  const style = getComputedStyle(element)
+
+  // Copiar estilos relevantes do textarea
+  const properties = [
+    "boxSizing",
+    "width",
+    "height",
+    "overflowX",
+    "overflowY",
+    "borderTopWidth",
+    "borderRightWidth",
+    "borderBottomWidth",
+    "borderLeftWidth",
+    "paddingTop",
+    "paddingRight",
+    "paddingBottom",
+    "paddingLeft",
+    "fontStyle",
+    "fontVariant",
+    "fontWeight",
+    "fontStretch",
+    "fontSize",
+    "fontSizeAdjust",
+    "lineHeight",
+    "fontFamily",
+    "textAlign",
+    "textTransform",
+    "textIndent",
+    "textDecoration",
+    "letterSpacing",
+    "wordSpacing",
+  ]
+
+  properties.forEach((prop) => {
+    div.style[prop as any] = style[prop as any]
+  })
+
+  div.style.position = "absolute"
+  div.style.visibility = "hidden"
+  div.style.whiteSpace = "pre-wrap"
+  div.style.wordWrap = "break-word"
+  div.style.top = "0px"
+  div.style.left = "0px"
+
+  document.body.appendChild(div)
+
+  const textContent = element.value.substring(0, position)
+  div.textContent = textContent
+
+  const span = document.createElement("span")
+  span.textContent = element.value.substring(position) || "."
+  div.appendChild(span)
+
+  const coordinates = {
+    top: span.offsetTop,
+    left: span.offsetLeft,
+    height: span.offsetHeight,
+  }
+
+  document.body.removeChild(div)
+  return coordinates
+}
+
 export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardShortcutsProps) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")
@@ -176,20 +241,12 @@ export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardSho
         if (cursorPosition === 0 || lastChar === "\n" || lastChar === " ") {
           e.preventDefault()
 
-          // Calculate position for popover
           const rect = textarea.getBoundingClientRect()
-          const textareaStyle = window.getComputedStyle(textarea)
-          const lineHeight = Number.parseInt(textareaStyle.lineHeight)
-          const fontSize = Number.parseInt(textareaStyle.fontSize)
-
-          // Rough calculation of cursor position
-          const lines = textBeforeCursor.split("\n")
-          const currentLine = lines.length - 1
-          const currentColumn = lines[lines.length - 1].length
+          const caretCoords = getCaretCoordinates(textarea, cursorPosition)
 
           setPosition({
-            top: rect.top + currentLine * lineHeight + lineHeight + 5,
-            left: rect.left + currentColumn * (fontSize * 0.6) + 10,
+            top: rect.top + caretCoords.top + caretCoords.height + 5 + window.scrollY,
+            left: rect.left + caretCoords.left + window.scrollX,
           })
 
           setOpen(true)
@@ -218,15 +275,7 @@ export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardSho
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <div
-          style={{
-            position: "fixed",
-            top: position.top,
-            left: position.left,
-            pointerEvents: "none",
-            zIndex: 50,
-          }}
-        />
+        <div className="sr-only" />
       </PopoverTrigger>
       <PopoverContent
         className="w-80 p-0"
@@ -237,6 +286,9 @@ export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardSho
           left: position.left,
           zIndex: 50,
         }}
+        avoidCollisions={false}
+        sideOffset={0}
+        alignOffset={0}
       >
         <Command>
           <CommandInput placeholder="Buscar atalhos..." value={search} onValueChange={setSearch} autoFocus />
