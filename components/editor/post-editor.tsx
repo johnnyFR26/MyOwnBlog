@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,10 +9,11 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Save, Eye, ArrowLeft, Loader2 } from "lucide-react"
+import { Save, Eye, ArrowLeft, Loader2, Keyboard } from "lucide-react"
 import Link from "next/link"
 import { createPostAction, updatePostAction } from "@/lib/actions"
 import type { Post, Blog } from "@/lib/database"
+import KeyboardShortcuts from "./keyboard-shortcuts"
 
 interface PostEditorProps {
   blog: Blog
@@ -22,6 +23,7 @@ interface PostEditorProps {
 
 export default function PostEditor({ blog, post, mode }: PostEditorProps) {
   const router = useRouter()
+  const contentTextareaRef = useRef<HTMLTextAreaElement>(null)
   const [loading, setLoading] = useState(false)
   const [title, setTitle] = useState(post?.title || "")
   const [slug, setSlug] = useState(post?.slug || "")
@@ -30,7 +32,6 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
   const [published, setPublished] = useState(post?.published || false)
   const [autoSlug, setAutoSlug] = useState(!post?.slug)
 
-  // Auto-generate slug from title
   useEffect(() => {
     if (autoSlug && title) {
       const generatedSlug = title
@@ -43,7 +44,7 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
     }
   }, [title, autoSlug])
 
-  async function handleSave(shouldPublish?: boolean) {
+  const handleSave = async (shouldPublish?: boolean) => {
     if (!title.trim() || !slug.trim()) {
       alert("Title and slug are required")
       return
@@ -79,6 +80,27 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleShortcutInsert = (template: string, cursorOffset = 0) => {
+    const textarea = contentTextareaRef.current
+    if (!textarea) return
+
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    const textBefore = content.substring(0, start)
+    const textAfter = content.substring(end)
+
+    const beforeWithoutSlash = textBefore.endsWith("/") ? textBefore.slice(0, -1) : textBefore
+
+    const newContent = beforeWithoutSlash + template + textAfter
+    setContent(newContent)
+
+    setTimeout(() => {
+      const newCursorPos = beforeWithoutSlash.length + template.length + cursorOffset
+      textarea.focus()
+      textarea.setSelectionRange(newCursorPos, newCursorPos)
+    }, 0)
   }
 
   return (
@@ -168,17 +190,29 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="content">Conteudo</Label>
-                  <Textarea
-                    id="content"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    placeholder="Escreva o conteudo do post... Você pode usar HTML."
-                    rows={20}
-                    className="font-mono text-sm"
-                  />
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="content">Conteudo</Label>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Keyboard className="h-3 w-3" />
+                      Digite "/" para atalhos
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <Textarea
+                      ref={contentTextareaRef}
+                      id="content"
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      placeholder="Escreva o conteudo do post... Digite '/' para ver os atalhos disponíveis."
+                      rows={20}
+                      className="font-mono text-sm"
+                    />
+                    <KeyboardShortcuts textareaRef={contentTextareaRef} onInsert={handleShortcutInsert} />
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     Você pode usar tags HTML como &lt;h1&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a&gt;, etc.
+                    <br />
+                    <strong>Dica:</strong> Digite "/" para abrir o menu de atalhos rápidos!
                   </p>
                 </div>
               </TabsContent>
@@ -248,6 +282,25 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
                     </div>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Atalhos de Teclado</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-muted-foreground space-y-2">
+                <p>
+                  • Digite <code className="bg-muted px-1 py-0.5 rounded">/</code> para abrir o menu de atalhos
+                </p>
+                <p>
+                  • Use <code className="bg-muted px-1 py-0.5 rounded">Esc</code> para fechar o menu
+                </p>
+                <p>
+                  • Navegue com as setas e pressione <code className="bg-muted px-1 py-0.5 rounded">Enter</code> para
+                  selecionar
+                </p>
+                <p>• Atalhos disponíveis: títulos, formatação, links, listas, código e mais!</p>
               </CardContent>
             </Card>
 
