@@ -218,10 +218,13 @@ export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardSho
         if (cursorPosition === 0 || lastChar === "\n" || lastChar === " ") {
           e.preventDefault()
           const caretCoords = getCaretCoordinates(textarea, cursorPosition)
+
+          // 🔥 agora abre acima do caret
           setPosition({
-            top: caretCoords.top + caretCoords.height + 5,
+            top: caretCoords.top - 8, // sobe um pouco
             left: caretCoords.left,
           })
+
           setOpen(true)
           setSearch("")
         }
