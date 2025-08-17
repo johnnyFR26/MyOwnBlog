@@ -287,25 +287,6 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Atalhos de Teclado</CardTitle>
-              </CardHeader>
-              <CardContent className="text-sm text-muted-foreground space-y-2">
-                <p>
-                  • Digite <code className="bg-muted px-1 py-0.5 rounded">/</code> para abrir o menu de atalhos
-                </p>
-                <p>
-                  • Use <code className="bg-muted px-1 py-0.5 rounded">Esc</code> para fechar o menu
-                </p>
-                <p>
-                  • Navegue com as setas e pressione <code className="bg-muted px-1 py-0.5 rounded">Enter</code> para
-                  selecionar
-                </p>
-                <p>• Atalhos disponíveis: títulos, formatação, links, listas, código e mais!</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
                 <CardTitle className="text-lg">Dicas</CardTitle>
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground space-y-2">
