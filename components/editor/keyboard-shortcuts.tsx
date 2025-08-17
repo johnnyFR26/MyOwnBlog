@@ -1,9 +1,15 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import {
   Heading1,
@@ -161,35 +167,10 @@ function getCaretCoordinates(element: HTMLTextAreaElement, position: number) {
   const div = document.createElement("div")
   const style = getComputedStyle(element)
 
-  // Copiar estilos relevantes do textarea
   const properties = [
-    "boxSizing",
-    "width",
-    "height",
-    "overflowX",
-    "overflowY",
-    "borderTopWidth",
-    "borderRightWidth",
-    "borderBottomWidth",
-    "borderLeftWidth",
-    "paddingTop",
-    "paddingRight",
-    "paddingBottom",
-    "paddingLeft",
-    "fontStyle",
-    "fontVariant",
-    "fontWeight",
-    "fontStretch",
-    "fontSize",
-    "fontSizeAdjust",
-    "lineHeight",
-    "fontFamily",
-    "textAlign",
-    "textTransform",
-    "textIndent",
-    "textDecoration",
-    "letterSpacing",
-    "wordSpacing",
+    "boxSizing", "width", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft",
+    "fontStyle", "fontVariant", "fontWeight", "fontStretch", "fontSize", "lineHeight",
+    "fontFamily", "textAlign", "textTransform", "textIndent", "letterSpacing", "wordSpacing",
   ]
 
   properties.forEach((prop) => {
@@ -200,21 +181,18 @@ function getCaretCoordinates(element: HTMLTextAreaElement, position: number) {
   div.style.visibility = "hidden"
   div.style.whiteSpace = "pre-wrap"
   div.style.wordWrap = "break-word"
-  div.style.top = "0px"
-  div.style.left = "0px"
 
-  document.body.appendChild(div)
-
-  const textContent = element.value.substring(0, position)
-  div.textContent = textContent
+  div.textContent = element.value.substring(0, position)
 
   const span = document.createElement("span")
   span.textContent = element.value.substring(position) || "."
   div.appendChild(span)
 
+  document.body.appendChild(div)
+
   const coordinates = {
-    top: span.offsetTop,
-    left: span.offsetLeft,
+    top: span.offsetTop + element.scrollTop,
+    left: span.offsetLeft + element.scrollLeft,
     height: span.offsetHeight,
   }
 
@@ -237,18 +215,13 @@ export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardSho
         const textBeforeCursor = textarea.value.substring(0, cursorPosition)
         const lastChar = textBeforeCursor[textBeforeCursor.length - 1]
 
-        // Only trigger if "/" is at start of line or after whitespace
         if (cursorPosition === 0 || lastChar === "\n" || lastChar === " ") {
           e.preventDefault()
-
-          const rect = textarea.getBoundingClientRect()
           const caretCoords = getCaretCoordinates(textarea, cursorPosition)
-
           setPosition({
-            top: rect.top + caretCoords.top + caretCoords.height + 5 + window.scrollY,
-            left: rect.left + caretCoords.left + window.scrollX,
+            top: caretCoords.top + caretCoords.height + 5,
+            left: caretCoords.left,
           })
-
           setOpen(true)
           setSearch("")
         }
@@ -278,10 +251,9 @@ export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardSho
         <div className="sr-only" />
       </PopoverTrigger>
       <PopoverContent
-        className="w-80 p-0"
+        className="w-80 p-0 absolute"
         align="start"
         style={{
-          position: "fixed",
           top: position.top,
           left: position.left,
           zIndex: 50,
@@ -291,7 +263,12 @@ export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardSho
         alignOffset={0}
       >
         <Command>
-          <CommandInput placeholder="Buscar atalhos..." value={search} onValueChange={setSearch} autoFocus />
+          <CommandInput
+            placeholder="Buscar atalhos..."
+            value={search}
+            onValueChange={setSearch}
+            autoFocus
+          />
           <CommandList>
             <CommandEmpty>Nenhum atalho encontrado.</CommandEmpty>
             <CommandGroup heading="Formatação">
@@ -307,7 +284,9 @@ export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardSho
                     <div className="text-xs text-muted-foreground">{shortcut.description}</div>
                   </div>
                   <code className="text-xs bg-muted px-1 py-0.5 rounded">
-                    {shortcut.template.length > 20 ? shortcut.template.substring(0, 20) + "..." : shortcut.template}
+                    {shortcut.template.length > 20
+                      ? shortcut.template.substring(0, 20) + "..."
+                      : shortcut.template}
                   </code>
                 </CommandItem>
               ))}
