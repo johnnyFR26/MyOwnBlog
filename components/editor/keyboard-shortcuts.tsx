@@ -219,9 +219,8 @@ export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardSho
           e.preventDefault()
           const caretCoords = getCaretCoordinates(textarea, cursorPosition)
 
-          // 🔥 agora abre acima do caret
           setPosition({
-            top: caretCoords.top - 8, // sobe um pouco
+            top: caretCoords.top,
             left: caretCoords.left,
           })
 
