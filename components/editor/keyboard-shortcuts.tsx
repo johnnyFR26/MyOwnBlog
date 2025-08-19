@@ -163,47 +163,9 @@ interface KeyboardShortcutsProps {
   onInsert: (text: string, cursorOffset?: number) => void
 }
 
-function getCaretCoordinates(element: HTMLTextAreaElement, position: number) {
-  const div = document.createElement("div")
-  const style = getComputedStyle(element)
-
-  const properties = [
-    "boxSizing", "width", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft",
-    "fontStyle", "fontVariant", "fontWeight", "fontStretch", "fontSize", "lineHeight",
-    "fontFamily", "textAlign", "textTransform", "textIndent", "letterSpacing", "wordSpacing",
-  ]
-
-  properties.forEach((prop) => {
-    div.style[prop as any] = style[prop as any]
-  })
-
-  div.style.position = "absolute"
-  div.style.visibility = "hidden"
-  div.style.whiteSpace = "pre-wrap"
-  div.style.wordWrap = "break-word"
-
-  div.textContent = element.value.substring(0, position)
-
-  const span = document.createElement("span")
-  span.textContent = element.value.substring(position) || "."
-  div.appendChild(span)
-
-  document.body.appendChild(div)
-
-  const coordinates = {
-    top: span.offsetTop + element.scrollTop,
-    left: span.offsetLeft + element.scrollLeft,
-    height: span.offsetHeight,
-  }
-
-  document.body.removeChild(div)
-  return coordinates
-}
-
 export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardShortcutsProps) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")
-  const [position, setPosition] = useState({ top: 0, left: 0 })
 
   useEffect(() => {
     const textarea = textareaRef.current
@@ -217,13 +179,6 @@ export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardSho
 
         if (cursorPosition === 0 || lastChar === "\n" || lastChar === " ") {
           e.preventDefault()
-          const caretCoords = getCaretCoordinates(textarea, cursorPosition)
-
-          setPosition({
-            top: caretCoords.top,
-            left: caretCoords.left,
-          })
-
           setOpen(true)
           setSearch("")
         }
@@ -247,23 +202,11 @@ export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardSho
       shortcut.description.toLowerCase().includes(search.toLowerCase()),
   )
 
+  if (!open) return null
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <div className="sr-only" />
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-80 p-0 absolute"
-        align="start"
-        style={{
-          top: position.top,
-          left: position.left,
-          zIndex: 50,
-        }}
-        avoidCollisions={false}
-        sideOffset={0}
-        alignOffset={0}
-      >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="w-80 bg-background border rounded-lg shadow-lg">
         <Command>
           <CommandInput
             placeholder="Buscar atalhos..."
@@ -295,7 +238,7 @@ export default function KeyboardShortcuts({ textareaRef, onInsert }: KeyboardSho
             </CommandGroup>
           </CommandList>
         </Command>
-      </PopoverContent>
-    </Popover>
+      </div>
+    </div>
   )
 }
