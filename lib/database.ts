@@ -24,6 +24,7 @@ export interface Post {
   excerpt: string | null
   published: boolean
   featured_image_url: string | null
+  custom_css: string | null
   created_at: string
   updated_at: string
 }

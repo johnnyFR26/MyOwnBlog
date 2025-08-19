@@ -9,11 +9,12 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Save, Eye, ArrowLeft, Loader2, Keyboard } from "lucide-react"
+import { Save, Eye, ArrowLeft, Loader2, Keyboard, Palette } from "lucide-react"
 import Link from "next/link"
 import { createPostAction, updatePostAction } from "@/lib/actions"
 import type { Post, Blog } from "@/lib/database"
 import KeyboardShortcuts from "./keyboard-shortcuts"
+import VisualCSSEditor from "./visual-css-editor"
 
 interface PostEditorProps {
   blog: Blog
@@ -31,6 +32,7 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
   const [excerpt, setExcerpt] = useState(post?.excerpt || "")
   const [published, setPublished] = useState(post?.published || false)
   const [autoSlug, setAutoSlug] = useState(!post?.slug)
+  const [customCSS, setCustomCSS] = useState(post?.custom_css || "")
 
   useEffect(() => {
     if (autoSlug && title) {
@@ -58,6 +60,7 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
     formData.append("content", content)
     formData.append("excerpt", excerpt)
     formData.append("published", shouldPublish !== undefined ? shouldPublish.toString() : published.toString())
+    formData.append("custom_css", customCSS)
 
     try {
       let result
@@ -133,8 +136,12 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <Tabs defaultValue="edit" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="edit">Editar</TabsTrigger>
+                <TabsTrigger value="style">
+                  <Palette className="h-4 w-4 mr-2" />
+                  Estilizar
+                </TabsTrigger>
                 <TabsTrigger value="preview">Prévia</TabsTrigger>
               </TabsList>
 
@@ -217,6 +224,10 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
                 </div>
               </TabsContent>
 
+              <TabsContent value="style" className="space-y-4">
+                <VisualCSSEditor initialCSS={customCSS} onCSSChange={setCustomCSS} />
+              </TabsContent>
+
               <TabsContent value="preview" className="space-y-4">
                 <Card>
                   <CardHeader>
@@ -224,6 +235,7 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
                     {excerpt && <p className="text-muted-foreground">{excerpt}</p>}
                   </CardHeader>
                   <CardContent>
+                    {customCSS && <style dangerouslySetInnerHTML={{ __html: customCSS }} />}
                     <div
                       className="prose prose-sm max-w-none"
                       dangerouslySetInnerHTML={{
