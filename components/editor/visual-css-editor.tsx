@@ -102,6 +102,8 @@ export default function VisualCSSEditor({ initialCSS = "", onCSSChange }: Visual
   // Update CSS when rules change
   useEffect(() => {
     const css = generateCSS()
+    console.log("[v0] VisualCSSEditor: Generated CSS:", css)
+    console.log("[v0] VisualCSSEditor: Calling onCSSChange")
     onCSSChange(css)
   }, [cssRules, onCSSChange])
 

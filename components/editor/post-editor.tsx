@@ -52,6 +52,7 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
       return
     }
 
+    console.log("[v0] PostEditor: Saving post with customCSS:", customCSS)
     setLoading(true)
 
     const formData = new FormData()
@@ -61,6 +62,8 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
     formData.append("excerpt", excerpt)
     formData.append("published", shouldPublish !== undefined ? shouldPublish.toString() : published.toString())
     formData.append("custom_css", customCSS)
+
+    console.log("[v0] PostEditor: FormData custom_css:", formData.get("custom_css"))
 
     try {
       let result

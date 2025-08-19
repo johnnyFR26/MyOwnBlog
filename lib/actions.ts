@@ -111,6 +111,9 @@ export async function createPostAction(formData: FormData) {
   const content = formData.get("content") as string
   const excerpt = formData.get("excerpt") as string
   const published = formData.get("published") === "true"
+  const customCSS = formData.get("custom_css") as string
+
+  console.log("[v0] createPostAction: Received custom_css:", customCSS)
 
   if (!blogId || !title || !slug) {
     return { error: "Blog ID, title, and slug are required" }
@@ -137,6 +140,7 @@ export async function createPostAction(formData: FormData) {
         content: content || null,
         excerpt: excerpt || null,
         published,
+        custom_css: customCSS || null,
       },
     ])
     .select()
@@ -147,6 +151,7 @@ export async function createPostAction(formData: FormData) {
     return { error: "Failed to create post" }
   }
 
+  console.log("[v0] createPostAction: Post created successfully with custom_css")
   revalidatePath(`/dashboard/blogs/${blogId}`)
   return { success: true, post }
 }
@@ -158,6 +163,9 @@ export async function updatePostAction(formData: FormData) {
   const content = formData.get("content") as string
   const excerpt = formData.get("excerpt") as string
   const published = formData.get("published") === "true"
+  const customCSS = formData.get("custom_css") as string
+
+  console.log("[v0] updatePostAction: Received custom_css:", customCSS)
 
   if (!postId || !title || !slug) {
     return { error: "Post ID, title, and slug are required" }
@@ -189,6 +197,7 @@ export async function updatePostAction(formData: FormData) {
       content: content || null,
       excerpt: excerpt || null,
       published,
+      custom_css: customCSS || null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", postId)
@@ -200,6 +209,7 @@ export async function updatePostAction(formData: FormData) {
     return { error: "Failed to update post" }
   }
 
+  console.log("[v0] updatePostAction: Post updated successfully with custom_css")
   revalidatePath(`/dashboard/blogs/${currentPost.blog_id}`)
   return { success: true, post }
 }
