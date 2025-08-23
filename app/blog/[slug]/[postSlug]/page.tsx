@@ -70,7 +70,7 @@ export default async function PostPage({ params }: PostPageProps) {
                 </div>
               </div>
             </header>
-
+            {post.custom_css && <style dangerouslySetInnerHTML={{ __html: post.custom_css }} />}
             <div
               className="prose prose-lg max-w-none"
               dangerouslySetInnerHTML={{
