@@ -25,6 +25,7 @@ export interface Post {
   published: boolean
   featured_image_url: string | null
   custom_css: string | null
+  categories: string[] // Added categories field
   created_at: string
   updated_at: string
 }
@@ -88,23 +89,143 @@ export async function createBlog(data: {
   return blog
 }
 
-export async function getPublishedPosts(blogSlug: string): Promise<Post[]> {
-  const { data: posts, error } = await supabase
-    .from("posts")
-    .select(`
-      *,
-      blogs!inner(slug)
-    `)
-    .eq("blogs.slug", blogSlug)
-    .eq("published", true)
-    .order("created_at", { ascending: false })
+export async function getPublishedPosts(
+  blogSlug: string,
+  searchQuery?: string,
+  categories?: string[],
+): Promise<Post[]> {
+  try {
+    let query = supabase
+      .from("posts")
+      .select(`
+        *,
+        blogs!inner(slug)
+      `)
+      .eq("blogs.slug", blogSlug)
+      .eq("published", true)
 
-  if (error) {
-    console.error("Error fetching published posts:", error)
+    // Apply search filter if provided
+    if (searchQuery && searchQuery.trim()) {
+      query = query.or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%,excerpt.ilike.%${searchQuery}%`)
+    }
+
+    // Try to apply category filter, but handle gracefully if column doesn't exist
+    if (categories && categories.length > 0) {
+      query = query.overlaps("categories", categories)
+    }
+
+    query = query.order("created_at", { ascending: false })
+
+    const { data: posts, error } = await query
+
+    if (error) {
+      // If error is about missing categories column, retry without category filter
+      if (error.code === "42703" && error.message?.includes("categories")) {
+        console.log("[v0] Categories column doesn't exist, fetching posts without category filter")
+        const { data: fallbackPosts, error: fallbackError } = await supabase
+          .from("posts")
+          .select(`
+            *,
+            blogs!inner(slug)
+          `)
+          .eq("blogs.slug", blogSlug)
+          .eq("published", true)
+          .order("created_at", { ascending: false })
+
+        if (fallbackError) {
+          console.error("Error fetching published posts:", fallbackError)
+          return []
+        }
+
+        // Apply search filter manually if needed
+        if (searchQuery && searchQuery.trim()) {
+          const searchLower = searchQuery.toLowerCase()
+          return (
+            fallbackPosts?.filter(
+              (post) =>
+                post.title?.toLowerCase().includes(searchLower) ||
+                post.content?.toLowerCase().includes(searchLower) ||
+                post.excerpt?.toLowerCase().includes(searchLower),
+            ) || []
+          )
+        }
+
+        return fallbackPosts || []
+      }
+
+      console.error("Error fetching published posts:", error)
+      return []
+    }
+
+    return posts || []
+  } catch (error: any) {
+    // Catch any runtime errors
+    console.log("[v0] Error fetching posts, retrying without categories:", error.message)
+
+    // Fallback: fetch without categories
+    const { data: fallbackPosts, error: fallbackError } = await supabase
+      .from("posts")
+      .select(`
+        *,
+        blogs!inner(slug)
+      `)
+      .eq("blogs.slug", blogSlug)
+      .eq("published", true)
+      .order("created_at", { ascending: false })
+
+    if (fallbackError) {
+      console.error("Error fetching published posts:", fallbackError)
+      return []
+    }
+
+    // Apply search filter manually if needed
+    if (searchQuery && searchQuery.trim()) {
+      const searchLower = searchQuery.toLowerCase()
+      return (
+        fallbackPosts?.filter(
+          (post) =>
+            post.title?.toLowerCase().includes(searchLower) ||
+            post.content?.toLowerCase().includes(searchLower) ||
+            post.excerpt?.toLowerCase().includes(searchLower),
+        ) || []
+      )
+    }
+
+    return fallbackPosts || []
+  }
+}
+
+export async function getBlogCategories(blogSlug: string): Promise<string[]> {
+  try {
+    const { data: posts, error } = await supabase
+      .from("posts")
+      .select(`
+        categories,
+        blogs!inner(slug)
+      `)
+      .eq("blogs.slug", blogSlug)
+      .eq("published", true)
+
+    if (error) {
+      // If error is about missing categories column, return empty array
+      if (error.code === "42703" && error.message?.includes("categories")) {
+        console.log("[v0] Categories column doesn't exist yet, returning empty categories")
+        return []
+      }
+      console.error("Error fetching blog categories:", error)
+      return []
+    }
+
+    // Extract and flatten all categories
+    const allCategories = posts?.flatMap((post) => post.categories || []) || []
+
+    // Return unique categories
+    return Array.from(new Set(allCategories)).sort()
+  } catch (error: any) {
+    // Catch any runtime errors including column not found
+    console.log("[v0] Error fetching categories, likely column doesn't exist:", error.message)
     return []
   }
-
-  return posts || []
 }
 
 export async function getPublishedPost(blogSlug: string, postSlug: string): Promise<Post | null> {

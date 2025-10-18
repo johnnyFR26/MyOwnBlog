@@ -73,7 +73,7 @@ export async function createBlogAction(formData: FormData) {
     return { error: "Name and slug are required" }
   }
 
-  const { data: existingBlog } = await supabase.from("blogs").select("id").eq("slug", slug).single()
+  const { data: existingBlog } = await supabase.from("blogs").select("id").eq("slug", slug).maybeSingle()
 
   if (existingBlog) {
     return { error: "A blog with this URL slug already exists" }
@@ -112,6 +112,7 @@ export async function createPostAction(formData: FormData) {
   const excerpt = formData.get("excerpt") as string
   const published = formData.get("published") === "true"
   const customCSS = formData.get("custom_css") as string
+  const categoriesJSON = formData.get("categories") as string // Added categories
 
   console.log("[v0] createPostAction: Received custom_css:", customCSS)
 
@@ -119,12 +120,19 @@ export async function createPostAction(formData: FormData) {
     return { error: "Blog ID, title, and slug are required" }
   }
 
+  let categories: string[] = []
+  try {
+    categories = categoriesJSON ? JSON.parse(categoriesJSON) : []
+  } catch (error) {
+    console.error("Error parsing categories:", error)
+  }
+
   const { data: existingPost } = await supabase
     .from("posts")
     .select("id")
     .eq("blog_id", blogId)
     .eq("slug", slug)
-    .single()
+    .maybeSingle()
 
   if (existingPost) {
     return { error: "A post with this URL slug already exists in this blog" }
@@ -141,6 +149,7 @@ export async function createPostAction(formData: FormData) {
         excerpt: excerpt || null,
         published,
         custom_css: customCSS || null,
+        categories, // Added categories to insert
       },
     ])
     .select()
@@ -164,11 +173,19 @@ export async function updatePostAction(formData: FormData) {
   const excerpt = formData.get("excerpt") as string
   const published = formData.get("published") === "true"
   const customCSS = formData.get("custom_css") as string
+  const categoriesJSON = formData.get("categories") as string
 
   console.log("[v0] updatePostAction: Received custom_css:", customCSS)
 
   if (!postId || !title || !slug) {
     return { error: "Post ID, title, and slug are required" }
+  }
+
+  let categories: string[] = []
+  try {
+    categories = categoriesJSON ? JSON.parse(categoriesJSON) : []
+  } catch (error) {
+    console.error("Error parsing categories:", error)
   }
 
   const { data: currentPost } = await supabase.from("posts").select("blog_id").eq("id", postId).single()
@@ -183,7 +200,7 @@ export async function updatePostAction(formData: FormData) {
     .eq("blog_id", currentPost.blog_id)
     .eq("slug", slug)
     .neq("id", postId)
-    .single()
+    .maybeSingle()
 
   if (existingPost) {
     return { error: "A post with this URL slug already exists in this blog" }
@@ -198,6 +215,7 @@ export async function updatePostAction(formData: FormData) {
       excerpt: excerpt || null,
       published,
       custom_css: customCSS || null,
+      categories, // Added categories to update
       updated_at: new Date().toISOString(),
     })
     .eq("id", postId)

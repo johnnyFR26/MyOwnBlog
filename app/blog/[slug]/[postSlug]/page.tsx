@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, Clock } from "lucide-react"
 import { getBlogBySlug, getPublishedPost } from "@/lib/database"
 import BlogHeader from "@/components/blog/blog-header"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { trackAnalytics } from "@/lib/analytics"
 
 interface PostPageProps {
@@ -54,6 +55,20 @@ export default async function PostPage({ params }: PostPageProps) {
               </h1>
 
               {post.excerpt && <p className="text-xl text-muted-foreground mb-4">{post.excerpt}</p>}
+
+              {post.categories && post.categories.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {post.categories.map((category) => (
+                    <Badge
+                      key={category}
+                      variant="secondary"
+                      style={{ backgroundColor: blog.primary_color + "20", color: blog.accent_color }}
+                    >
+                      {category}
+                    </Badge>
+                  ))}
+                </div>
+              )}
 
               <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                 <div className="flex items-center">

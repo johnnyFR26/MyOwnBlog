@@ -15,6 +15,7 @@ import { createPostAction, updatePostAction } from "@/lib/actions"
 import type { Post, Blog } from "@/lib/database"
 import KeyboardShortcuts from "./keyboard-shortcuts"
 import VisualCSSEditor from "./visual-css-editor"
+import CategoryInput from "./category-input"
 
 interface PostEditorProps {
   blog: Blog
@@ -33,6 +34,7 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
   const [published, setPublished] = useState(post?.published || false)
   const [autoSlug, setAutoSlug] = useState(!post?.slug)
   const [customCSS, setCustomCSS] = useState(post?.custom_css || "")
+  const [categories, setCategories] = useState<string[]>(post?.categories || [])
 
   useEffect(() => {
     if (autoSlug && title) {
@@ -62,6 +64,7 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
     formData.append("excerpt", excerpt)
     formData.append("published", shouldPublish !== undefined ? shouldPublish.toString() : published.toString())
     formData.append("custom_css", customCSS)
+    formData.append("categories", JSON.stringify(categories))
 
     console.log("[v0] PostEditor: FormData custom_css:", formData.get("custom_css"))
 
@@ -198,6 +201,8 @@ export default function PostEditor({ blog, post, mode }: PostEditorProps) {
                     rows={3}
                   />
                 </div>
+
+                <CategoryInput categories={categories} onChange={setCategories} />
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
