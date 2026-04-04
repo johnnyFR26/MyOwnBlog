@@ -39,7 +39,7 @@ function BlogJsonLd({ blog, posts, baseUrl }: { blog: any; posts: any[]; baseUrl
       headline: post.title,
       description: post.excerpt || "",
       url: `${baseUrl}/blog/${blog.slug}/${post.slug}`,
-      datePublished: post.published_at || post.created_at,
+      datePublished: post.created_at,
       dateModified: post.updated_at || post.created_at,
       author: {
         "@type": "Organization",
@@ -74,30 +74,30 @@ export default async function BlogPage({ params, searchParams }: BlogPageProps) 
   return (
     <>
       <BlogJsonLd blog={blog} posts={posts} baseUrl={baseUrl} />
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
         <BlogHeader blog={blog} />
 
-        <main className="container py-12">
+        <main className="container py-12 max-w-7xl mx-auto px-4">
           <div className="mb-12 max-w-4xl mx-auto">
             <SearchAndFilter blogSlug={params.slug} availableCategories={availableCategories} />
           </div>
 
           {posts.length === 0 ? (
             <div className="text-center py-20 px-4">
-              <div className="inline-flex p-6 rounded-full mb-6" style={{ backgroundColor: blog.primary_color + "20" }}>
+              <div className="inline-flex p-6 rounded-full mb-6 shadow-sm" style={{ backgroundColor: blog.primary_color + "20" }}>
                 <BookOpen className="h-12 w-12" style={{ color: blog.accent_color }} />
               </div>
-              <h2 className="text-3xl font-bold mb-4 text-balance">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 text-balance" style={{ color: blog.secondary_color }}>
                 {searchQuery || selectedCategories.length > 0 ? "Nenhum post encontrado" : "Ainda não há posts"}
               </h2>
-              <p className="text-lg text-muted-foreground max-w-md mx-auto text-pretty">
+              <p className="text-base md:text-lg text-gray-600 max-w-md mx-auto text-pretty leading-relaxed">
                 {searchQuery || selectedCategories.length > 0
                   ? "Tente ajustar seus filtros de pesquisa para encontrar o que procura"
                   : "Novos posts serão publicados em breve. Volte mais tarde!"}
               </p>
             </div>
           ) : (
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
               {posts.map((post) => (
                 <PostCard key={post.id} post={post} blog={blog} />
               ))}
@@ -105,14 +105,14 @@ export default async function BlogPage({ params, searchParams }: BlogPageProps) 
           )}
         </main>
 
-        <footer className="border-t mt-20 bg-muted/30" style={{ borderTopColor: blog.secondary_color + "40" }}>
+        <footer className="border-t mt-20 bg-gray-50" style={{ borderTopColor: blog.secondary_color + "30" }}>
           <div className="container py-8">
-            <Separator className="mb-6" style={{ backgroundColor: blog.secondary_color + "20" }} />
+            <Separator className="mb-6 max-w-md mx-auto" style={{ backgroundColor: blog.secondary_color + "20" }} />
             <div className="text-center space-y-2">
-              <p className="text-sm font-medium" style={{ color: blog.accent_color }}>
+              <p className="text-sm font-semibold" style={{ color: blog.accent_color }}>
                 {blog.name}
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-gray-600">
                 {"\u00A9"} {new Date().getFullYear()} Todos os direitos reservados &middot; Powered by{" "}
                 <span className="font-semibold">Toasty Tech</span>
               </p>

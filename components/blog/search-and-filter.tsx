@@ -50,32 +50,32 @@ export default function SearchAndFilter({ blogSlug, availableCategories }: Searc
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+        <div className="relative w-full max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
           <Input
             type="search"
             placeholder="Pesquisar posts..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="pl-9 bg-white border-gray-300 focus:border-gray-400 focus:ring-gray-400"
           />
         </div>
 
         {availableCategories.length > 0 && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="gap-2 bg-transparent">
+              <Button variant="outline" className="gap-2 bg-white border-gray-300 hover:bg-gray-50">
                 <Filter className="h-4 w-4" />
                 Categorias
                 {selectedCategories.length > 0 && (
-                  <Badge variant="secondary" className="ml-1">
+                  <Badge variant="secondary" className="ml-1 bg-gray-200">
                     {selectedCategories.length}
                   </Badge>
                 )}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end" className="w-56 bg-white">
               {availableCategories.map((category) => (
                 <DropdownMenuCheckboxItem
                   key={category}
@@ -90,20 +90,20 @@ export default function SearchAndFilter({ blogSlug, availableCategories }: Searc
         )}
 
         {hasActiveFilters && (
-          <Button variant="ghost" size="icon" onClick={clearFilters} title="Limpar filtros">
+          <Button variant="ghost" size="icon" onClick={clearFilters} title="Limpar filtros" className="hover:bg-gray-100">
             <X className="h-4 w-4" />
           </Button>
         )}
       </div>
 
       {selectedCategories.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 justify-center">
           {selectedCategories.map((category) => (
-            <Badge key={category} variant="secondary" className="gap-1">
+            <Badge key={category} variant="secondary" className="gap-1 bg-gray-200 text-gray-700">
               {category}
               <button
                 onClick={() => toggleCategory(category)}
-                className="ml-1 hover:text-destructive"
+                className="ml-1 hover:text-red-600"
                 aria-label={`Remove ${category} filter`}
               >
                 <X className="h-3 w-3" />

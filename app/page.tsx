@@ -2,17 +2,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Footer } from "@/components/footer"
-import { ThemeToggle } from "@/components/theme-toggle"
 import Link from "next/link"
 import { PenTool, BarChart3, Palette, Users } from "lucide-react"
 
 export default async function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
-      <div className="absolute top-4 right-4">
-        <ThemeToggle />
-      </div>
-
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center space-y-6 max-w-4xl mx-auto">

@@ -117,8 +117,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+  
+  html,
   body {
     @apply bg-background text-foreground;
+    color-scheme: light !important;
   }
 
   .blog-theme {

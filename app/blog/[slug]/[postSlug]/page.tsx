@@ -34,7 +34,7 @@ function PostJsonLd({
     headline: post.title,
     description: post.excerpt || "",
     url: `${baseUrl}/blog/${blog.slug}/${post.slug}`,
-    datePublished: post.published_at || post.created_at,
+    datePublished: post.created_at,
     dateModified: post.updated_at || post.created_at,
     author: {
       "@type": "Organization",
@@ -120,51 +120,54 @@ export default async function PostPage({ params }: PostPageProps) {
     <>
       <PostJsonLd blog={blog} post={post} baseUrl={baseUrl} readingTime={readingTime} />
       <BreadcrumbJsonLd blog={blog} post={post} baseUrl={baseUrl} />
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
         <BlogHeader blog={blog} />
 
-        <main className="container py-8">
-          <div className="max-w-4xl mx-auto">
+        <main className="container py-8 max-w-4xl mx-auto px-4">
+          <div className="mx-auto">
             {/* Breadcrumb navigation */}
-            <nav aria-label="Breadcrumb" className="mb-6 text-sm text-muted-foreground">
-              <ol className="flex items-center gap-2">
+            <nav aria-label="Breadcrumb" className="mb-8 text-sm text-gray-600">
+              <ol className="flex items-center justify-center gap-2 flex-wrap">
                 <li>
-                  <Link href={`/blog/${blog.slug}`} className="hover:text-foreground transition-colors">
+                  <Link href={`/blog/${blog.slug}`} className="hover:text-gray-900 transition-colors">
                     {blog.name}
                   </Link>
                 </li>
                 <li aria-hidden="true">/</li>
-                <li className="text-foreground font-medium truncate max-w-[200px]" aria-current="page">
+                <li className="text-gray-900 font-medium text-center line-clamp-1" aria-current="page">
                   {post.title}
                 </li>
               </ol>
             </nav>
 
-            <Button variant="ghost" asChild className="mb-6">
-              <Link href={`/blog/${blog.slug}`}>
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Voltar para {blog.name}
-              </Link>
-            </Button>
+            <div className="flex justify-center mb-8">
+              <Button variant="ghost" asChild>
+                <Link href={`/blog/${blog.slug}`} className="group">
+                  <ArrowLeft className="h-4 w-4 mr-2 transition-transform group-hover:-translate-x-1" />
+                  Voltar para {blog.name}
+                </Link>
+              </Button>
+            </div>
 
-            <article itemScope itemType="https://schema.org/BlogPosting">
-              <header className="mb-8">
-                <h1 itemProp="headline" className="text-4xl font-bold mb-4" style={{ color: blog.accent_color }}>
+            <article itemScope itemType="https://schema.org/BlogPosting" className="bg-white rounded-lg shadow-sm border p-8 md:p-12">
+              <header className="mb-10 text-center">
+                <h1 itemProp="headline" className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight" style={{ color: blog.accent_color }}>
                   {post.title}
                 </h1>
 
                 {post.excerpt && (
-                  <p itemProp="description" className="text-xl text-muted-foreground mb-4">
+                  <p itemProp="description" className="text-lg md:text-xl text-gray-600 mb-6 max-w-3xl mx-auto leading-relaxed">
                     {post.excerpt}
                   </p>
                 )}
 
                 {post.categories && post.categories.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  <div className="flex flex-wrap gap-2 mb-6 justify-center">
                     {post.categories.map((category: string) => (
                       <Badge
                         key={category}
                         variant="secondary"
+                        className="text-sm px-3 py-1"
                         style={{ backgroundColor: blog.primary_color + "20", color: blog.accent_color }}
                       >
                         <span itemProp="keywords">{category}</span>
@@ -173,13 +176,13 @@ export default async function PostPage({ params }: PostPageProps) {
                   </div>
                 )}
 
-                <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                <div className="flex items-center justify-center flex-wrap gap-4 text-sm text-gray-600">
                   <time
                     itemProp="datePublished"
-                    dateTime={post.published_at || post.created_at}
+                    dateTime={post.created_at}
                     className="flex items-center"
                   >
-                    <Calendar className="h-4 w-4 mr-1" />
+                    <Calendar className="h-4 w-4 mr-1.5" />
                     {new Date(post.created_at).toLocaleDateString("pt-BR", {
                       year: "numeric",
                       month: "long",
@@ -187,7 +190,7 @@ export default async function PostPage({ params }: PostPageProps) {
                     })}
                   </time>
                   <div className="flex items-center">
-                    <Clock className="h-4 w-4 mr-1" />
+                    <Clock className="h-4 w-4 mr-1.5" />
                     <span itemProp="timeRequired" content={`PT${readingTime}M`}>
                       {readingTime} min de leitura
                     </span>
@@ -199,7 +202,7 @@ export default async function PostPage({ params }: PostPageProps) {
               {post.custom_css && <style dangerouslySetInnerHTML={{ __html: post.custom_css }} />}
               <div
                 itemProp="articleBody"
-                className="prose prose-lg max-w-none"
+                className="prose prose-lg max-w-none mx-auto"
                 dangerouslySetInnerHTML={{
                   __html: post.content || "",
                 }}
@@ -214,10 +217,13 @@ export default async function PostPage({ params }: PostPageProps) {
           </div>
         </main>
 
-        <footer className="border-t mt-12" style={{ borderTopColor: blog.secondary_color }}>
-          <div className="container py-6 text-center text-sm text-muted-foreground">
+        <footer className="border-t mt-16 bg-gray-50" style={{ borderTopColor: blog.secondary_color + "30" }}>
+          <div className="container py-8 text-center text-sm text-gray-600">
+            <p className="mb-2 font-medium" style={{ color: blog.accent_color }}>
+              {blog.name}
+            </p>
             <p>
-              © {new Date().getFullYear()} {blog.name}. Powered by Toasty Tech.
+              © {new Date().getFullYear()} {blog.name} · Powered by <span className="font-semibold">Toasty Tech</span>
             </p>
           </div>
         </footer>
@@ -240,7 +246,7 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
   const title = `${post.title} | ${blog.name}`
   const description = post.excerpt || `Leia ${post.title} no ${blog.name}`
   const url = `${baseUrl}/blog/${blog.slug}/${post.slug}`
-  const publishedTime = post.published_at || post.created_at
+  const publishedTime = post.created_at
   const modifiedTime = post.updated_at || post.created_at
 
   return {

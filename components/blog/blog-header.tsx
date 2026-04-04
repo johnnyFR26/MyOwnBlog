@@ -16,9 +16,9 @@ export default function BlogHeader({ blog }: BlogHeaderProps) {
         borderBottomColor: blog.secondary_color,
       }}
     >
-      <div className="container py-12 md:py-16">
-        <Link href={`/blog/${blog.slug}`} className="block">
-          <div className="flex items-center gap-3 mb-4">
+      <div className="container py-12 md:py-16 max-w-5xl mx-auto">
+        <Link href={`/blog/${blog.slug}`} className="block text-center">
+          <div className="flex items-center justify-center gap-3 mb-6">
             <div
               className="p-3 rounded-lg"
               style={{
@@ -36,8 +36,8 @@ export default function BlogHeader({ blog }: BlogHeaderProps) {
           </div>
           {blog.description && (
             <>
-              <Separator className="my-4 opacity-30" style={{ backgroundColor: blog.secondary_color }} />
-              <p className="text-lg md:text-xl max-w-3xl leading-relaxed" style={{ color: blog.secondary_color }}>
+              <Separator className="my-6 opacity-30 mx-auto max-w-2xl" style={{ backgroundColor: blog.secondary_color }} />
+              <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed" style={{ color: blog.secondary_color }}>
                 {blog.description}
               </p>
             </>
